@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+  <title>修改手机型号</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<div class="container mt-3">
+  <form th:action="@{/phone/update}" method="post" style="width: 400px">
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" id="p_name" placeholder="手机名称" name="pName" th:value="${phone.PName}">
+      <label for="p_name">手机名称</label>
+    </div>
+
+    <div class="form-floating mt-3 mb-3">
+      <select class="form-select" id="p_brand" name="bId">
+        <option th:value="${phone.BId}">请选择品牌</option>
+      </select>
+      <label for="p_brand">手机品牌</label>
+    </div>
+
+    <div class="form-floating mt-3 mb-3">
+      <input type="text" class="form-control" id="p_colour" placeholder="手机颜色" name="pColour" th:value="${phone.PColor}">
+      <label for="p_colour">手机颜色</label>
+    </div>
+
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" id="p_memory" placeholder="手机内存" name="pMemory" th:value="${phone.PMemory}">
+      <label for="p_memory">手机内存</label>
+    </div>
+
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" id="p_price" placeholder="手机价格" name="pPrice" th:value="${phone.PPrice}">
+      <label for="p_price">手机价格</label>
+    </div>
+    <input name="pId" th:value="${phone.PId}" style="display: none">
+    <button type="submit" class="btn btn-primary">修改</button>
+    <button type="reset" class="btn btn-secondary">重置</button>
+  </form>
+</div>
+
+</body>
+</html>
+<script>
+  $(document).ready(function() {
+    var brandSelect = $('#p_brand');
+    var brandId = [[${phone.BId}]]; // 指定品牌的 ID
+
+    // 查询指定品牌的名称，并将其设置为默认选项
+    $.ajax({
+      url: '/pms/getBrandName?bid=' + brandId,
+      method: 'GET',
+      success: function(data) {
+        brandSelect.find('option[value="' + brandId + '"]').text(data.bname);
+        brandSelect.val(brandId);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log('Error: ' + textStatus);
+      }
+    });
+    // 加载品牌列表
+    $.ajax({
+      url: '/pms/getBrandList',
+      method: 'GET',
+      success: function(data) {
+        for (var i = 0; i < data.length; i++) {
+          var option = $('<option>').attr('value', data[i].bid).text(data[i].bname);
+          brandSelect.append(option);
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log('Error: ' + textStatus);
+      }
+    });
+  });
+</script>

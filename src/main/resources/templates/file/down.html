@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <h2>下载列表</h2>
+  <button type="button" class="btn btn-primary"><a th:href="@{/d1}" style="color: white">手机型号表</a></button>
+  <button type="button" class="btn btn-primary"><a th:href="@{/d2}" style="color: white">手机销量表</a></button>
+  <button type="button" class="btn btn-primary"><a th:href="@{/d3}" style="color: white">手机库存表</a></button>
+</div>
+</body>
+</html>

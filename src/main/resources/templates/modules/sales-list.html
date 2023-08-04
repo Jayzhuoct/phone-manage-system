@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>手机销售</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function del(){
+            var f = confirm("确定要删除吗？");
+            return f;
+        }function msg(){
+            alert("成功！");
+        }
+    </script>
+    <style>
+        input:focus {
+            border: 1px solid #3b99fc;
+            outline: 0;
+            box-shadow: 0 0 3px 0px #3b99fc;
+            -webkit-box-shadow: 0 0 3px 0px #3b99fc;
+        }
+    </style>
+</head>
+
+<body>
+<div style="margin-left: 250px;width: 1200px">
+    <div style="float: left">
+    <form th:action="@{/sales/search}" method="post">
+        <input name="name" placeholder="顾客模糊查询">
+        <button type="submit" class="btn btn-primary" onclick="msg()">
+            <span style="color: white">查询</span>
+        </button>
+        <a th:href="@{/sales/toAdd}">
+            <button type="button" class="btn btn-success">
+                <span style="color: white">添加</span>
+            </button>
+        </a>
+    </form>
+    </div>
+    <div style="margin-left: 320px">
+    <form method="post" th:action="@{/readMarket}" enctype="multipart/form-data">
+        <input type="file" name="file">
+            <button type="button" class="btn btn-warning" onclick="msg()">
+                <span style="color: white">导入</span>
+            </button>
+        <a th:href="@{/writeMarket}">
+            <button type="button" class="btn btn-info" onclick="msg()">
+                <span style="color: white">导出</span>
+            </button>
+        </a>
+    </form>
+    </div>
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>序   号</th>
+        <th>手机名称</th>
+        <th>销售日期</th>
+        <th>销售数量</th>
+        <th>销售价格</th>
+        <th>顾客姓名</th>
+        <th>顾客电话</th>
+        <th>操    作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="sales:${salesList}">
+        <td th:text="${sales.SId}"></td>
+        <td><span th:data-pid="${sales.PId}" class="phone-name">Loading...</span></td>
+        <td th:text="${sales.SDate}"></td>
+        <td th:text="${sales.SQuantity}"></td>
+        <td th:text="${sales.SPrice}"></td>
+        <td th:text="${sales.customerName}"></td>
+        <td th:text="${sales.customerTel}"></td>
+        <td>
+            <a th:href="@{/sales/toUpdate(id=${sales.SId})}" class="btn btn-primary" role="button">
+                <span style="color: white">修改</span>
+            </a>
+            <a th:href="@{/sales/delete(id=${sales.SId})}" class="btn btn-danger" role="button" onclick="del()">
+                <span style="color: white">删除</span>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<ul class="pagination">
+    <!--首页-->
+    <li class="page-item">
+        <a class="page-link" th:href="@{/sales/list(page=${pageInfo.navigateFirstPage})}">首页</a>
+    </li>
+    <!--上一页-->
+    <li class="page-item" th:if="${pageInfo.hasPreviousPage}">
+        <a class="page-link" th:href="@{/sales/list(page=${pageInfo.prePage})}">上一页</a>
+    </li>
+    <!--循环遍历显示中间的页数-->
+    <li th:class="${num == pageInfo.pageNum?'page-item active':'page-item' }"
+        th:each="num:${#numbers.sequence(1,pageInfo.pages)}">
+        <a class="page-link" th:href="@{/sales/list(page=${num})}" th:text="${num}"></a>
+    </li>
+    <!--下一页-->
+    <li class="page-item" th:if="${pageInfo.hasNextPage}">
+        <a class="page-link" th:href="@{/sales/list(page=${pageInfo.nextPage})}">下一页</a>
+    </li>
+    <!--尾页-->
+    <li class="page-item"><a class="page-link" th:href="@{/sales/list(page=${pageInfo.navigateLastPage})}">尾页</a></li>
+</ul>
+<div class="alert alert-light">
+    当前第[[${pageInfo.pageNum}]]页 共[[${pageInfo.pages}]]页 总计[[${pageInfo.total}]]条记录
+</div>
+</div>
+</body>
+</html>
+<script>
+    $(document).ready(function() {
+        $('.phone-name').each(function() {
+            var pid = $(this).data('pid');
+            var pName = $(this);
+            $.ajax({
+                url: '/pms/getPhoneName?pid=' + pid,
+                method: 'GET',
+                success: function(data) {
+                    pName.text(JSON.parse(JSON.stringify(data)).pname);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('Error: ' + textStatus);
+                }
+            });
+        });
+        $('.vendor-name').each(function() {
+            var vid = $(this).data('vid');
+            var vName = $(this);
+            $.ajax({
+                url: '/pms/getVendorName?vid=' + vid,
+                method: 'GET',
+                success: function(data) {
+                    vName.text(JSON.parse(JSON.stringify(data)).vname);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('Error: ' + textStatus);
+                }
+            });
+        });
+    });
+</script>

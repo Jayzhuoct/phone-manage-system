@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>手机库存</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function del(){
+            var f = confirm("确定要删除吗？");
+            return f;
+        }
+        function msg(){
+            alert("成功！");
+        }
+    </script>
+    <style>
+        input:focus {
+            border: 1px solid #3b99fc;
+            outline: 0;
+            box-shadow: 0 0 3px 0px #3b99fc;
+            -webkit-box-shadow: 0 0 3px 0px #3b99fc;
+        }
+    </style>
+</head>
+
+<body>
+<div style="margin-left: 250px;width: 1200px">
+    <div style="float: left">
+    <form th:action="@{/repertory/search}" method="post">
+        <input name="id" placeholder="查询">
+        <button type="submit" class="btn btn-primary">
+            <span style="color: white">查询</span>
+        </button>
+        <a th:href="@{/repertory/toAdd}">
+            <button type="button" class="btn btn-success">
+                <span style="color: white">添加</span>
+            </button>
+        </a>
+    </form>
+    </div>
+    <div style="margin-left: 320px">
+        <form method="post" th:action="@{/readRepertory}" enctype="multipart/form-data">
+            <input type="file" name="file">
+            <button type="submit" class="btn btn-warning" onclick="msg()">
+                <span style="color: white">导入</span>
+            </button>
+
+        <a th:href="@{/writeRepertory}">
+            <button type="button" class="btn btn-info" onclick="msg()">
+                <span style="color: white">导出</span>
+            </button>
+        </a>
+        </form>
+    </div>
+     <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>序   号</th>
+            <th>手机名称</th>
+            <th>库存数量</th>
+            <th>进货价</th>
+            <th>供应商</th>
+            <th>操    作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="repertory:${repertorys}">
+            <td th:text="${repertory.RId}"></td>
+            <td><span th:data-pid="${repertory.PId}" class="phone-name">Loading...</span></td>
+            <td th:text="${repertory.RQuantity}"></td>
+            <td th:text="${repertory.RPrice}"></td>
+            <td><span th:data-vid="${repertory.VId}" class="vendor-name">Loading...</span></td>
+            <td>
+                <a th:href="@{/repertory/toUpdate(id=${repertory.RId})}" class="btn btn-primary" role="button">
+                    <span style="color: white">修改</span>
+                </a>
+                <a th:href="@{/repertory/delete(id=${repertory.RId})}" class="btn btn-danger" role="button" onclick="del()">
+                    <span style="color: white">删除</span>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <ul class="pagination">
+        <!--首页-->
+        <li class="page-item">
+            <a class="page-link" th:href="@{/repertory/list(page=${pageInfo.navigateFirstPage})}">首页</a>
+        </li>
+        <!--上一页-->
+        <li class="page-item" th:if="${pageInfo.hasPreviousPage}">
+            <a class="page-link" th:href="@{/repertory/list(page=${pageInfo.prePage})}">上一页</a>
+        </li>
+        <!--循环遍历显示中间的页数-->
+        <li th:class="${num == pageInfo.pageNum?'page-item active':'page-item' }"
+            th:each="num:${#numbers.sequence(1,pageInfo.pages)}">
+            <a class="page-link" th:href="@{/repertory/list(page=${num})}" th:text="${num}"></a>
+        </li>
+        <!--下一页-->
+        <li class="page-item" th:if="${pageInfo.hasNextPage}">
+            <a class="page-link" th:href="@{/repertory/list(page=${pageInfo.nextPage})}">下一页</a>
+        </li>
+        <!--尾页-->
+        <li class="page-item"><a class="page-link" th:href="@{/repertory/list(page=${pageInfo.navigateLastPage})}">尾页</a></li>
+    </ul>
+    <div class="alert alert-light">
+        当前第[[${pageInfo.pageNum}]]页 共[[${pageInfo.pages}]]页 总计[[${pageInfo.total}]]条记录
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(document).ready(function() {
+        $('.phone-name').each(function() {
+            var pid = $(this).data('pid');
+            var pName = $(this);
+            $.ajax({
+                url: '/pms/getPhoneName?pid=' + pid,
+                method: 'GET',
+                success: function(data) {
+                    pName.text(JSON.parse(JSON.stringify(data)).pname);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('Error: ' + textStatus);
+                }
+            });
+        });
+        $('.vendor-name').each(function() {
+            var vid = $(this).data('vid');
+            var vName = $(this);
+            $.ajax({
+                url: '/pms/getVendorName?vid=' + vid,
+                method: 'GET',
+                success: function(data) {
+                    vName.text(JSON.parse(JSON.stringify(data)).vname);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('Error: ' + textStatus);
+                }
+            });
+        });
+    });
+</script>

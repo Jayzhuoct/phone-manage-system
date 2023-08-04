@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>角色管理</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function del(){
+            var f = confirm("确定要删除吗？");
+            return f;
+        }
+
+        $(document).ready(function() {
+            $("span[data-module-id]").each(function() {
+                var moduleId = $(this).attr("data-module-id");
+                var url = "/pms/getModuleName?id=" + moduleId;
+                $.get(url, function(data) {
+                    $(this).text(data);
+                }.bind(this));
+            });
+        });
+    </script>
+</head>
+
+<body>
+<div style="margin-left: 250px;width: 1300px">
+<a th:href="@{/role/toAdd}">
+    <button type="button" class="btn btn-success">添加</button>
+</a>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>序   号</th>
+            <th>角   色</th>
+            <th>权   限</th>
+            <th>操   作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="rolePermission : ${rolePermissions}">
+            <td th:text="${rolePermission.roleId}"></td>
+            <td th:text="${rolePermission.roleName}"></td>
+            <td>
+                <ul>
+                    <li th:each="moduleId : ${rolePermission.moduleIds}">
+                        <span th:text="${moduleId}" th:attr="data-module-id=${moduleId}"></span>
+                    </li>
+                </ul>
+            </td>
+            <td>
+                <a th:href="@{/role/toUpdate(id=${rolePermission.roleId})}" class="btn btn-primary" role="button">
+                    <span style="color: white">修改</span>
+                </a>
+                <a th:href="@{/role/delete(id=${rolePermission.roleId})}" class="btn btn-danger" role="button" onclick="del()">
+                    <span style="color: white">删除</span>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <ul class="pagination">
+        <!--首页-->
+        <li class="page-item">
+            <a class="page-link" th:href="@{/role/list(page=${pageInfo.navigateFirstPage})}">首页</a>
+        </li>
+        <!--上一页-->
+        <li class="page-item" th:if="${pageInfo.hasPreviousPage}">
+            <a class="page-link" th:href="@{/role/list(page=${pageInfo.prePage})}">上一页</a>
+        </li>
+        <!--循环遍历显示中间的页数-->
+        <li th:class="${num == pageInfo.pageNum?'page-item active':'page-item' }"
+            th:each="num:${#numbers.sequence(1,pageInfo.pages)}">
+            <a class="page-link" th:href="@{/role/list(page=${num})}" th:text="${num}"></a>
+        </li>
+        <!--下一页-->
+        <li class="page-item" th:if="${pageInfo.hasNextPage}">
+            <a class="page-link" th:href="@{/role/list(page=${pageInfo.nextPage})}">下一页</a>
+        </li>
+        <!--尾页-->
+        <li class="page-item"><a class="page-link" th:href="@{/role/list(page=${pageInfo.navigateLastPage})}">尾页</a></li>
+    </ul>
+    <div class="alert alert-light">
+        当前第[[${pageInfo.pageNum}]]页 共[[${pageInfo.pages}]]页 总计[[${pageInfo.total}]]条记录
+    </div>
+</div>
+</body>
+</html>

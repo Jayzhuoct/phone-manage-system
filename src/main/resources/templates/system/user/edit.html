@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>修改管理员</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      $.ajax({
+        url: '/pms/getRoleList',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          var roleIds = $('#roleIds');
+          roleIds.empty();
+          $.each(data, function(index, module) {
+            var checkbox = $('<input type="checkbox" />').attr({
+              'value': module.roleId,
+              'name': 'roleIds'
+            }).appendTo($('<label>').text(module.roleName).appendTo(roleIds));
+          });
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+<div class="container mt-3">
+  <form th:action="@{/user/edit}" th:object="${userDto}" method="post">
+    <table>
+
+      <tr>
+        <td><label for="username">用户名</label></td>
+        <td><input type="text" class="form-control" id="username" name="username" th:field="${userDto.username}"></td>
+      </tr>
+      <tr>
+        <td><label>角色</label></td>
+        <td>
+          <div id="roleIds" style="margin-top:10px;">
+            <div th:each="roleId : ${userDto.roles}" style="margin-bottom:10px;">
+              <label style="margin-right:10px;">
+                <input type="checkbox" th:value="${roleId}" th:field="*{roles}" />
+                <span th:text="${roleId}"></span>
+              </label>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2"><button type="submit" class="btn btn-primary">修改</button></td>
+      </tr>
+    </table>
+  </form>
+</div>
+</body>
+</html>

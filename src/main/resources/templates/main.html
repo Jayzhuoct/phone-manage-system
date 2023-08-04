@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:c="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="UTF-8">
+	<title>手机销售后台管理系统</title>
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon" />
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+	<link rel="stylesheet" th:href="@{/css/xadmin.css}">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/js/xadmin.js}"></script>
+
+</head>
+<body>
+    <!-- 顶部开始 -->
+    <div class="container">
+        <div class="logo"><a th:href="@{/welcome}" th:target="main">手机销售后台管理系统</a></div>
+        <div class="left_open">
+            <i title="展开左侧栏" class="iconfont">&#xe699;</i>
+        </div>
+        <ul class="layui-nav right" lay-filter="">
+            <li class="layui-nav-item">
+                [[${name}]]
+                <dl class="layui-nav-child"> <!-- 二级菜单 -->
+                    <dd><a th:href="@{/logout}">退出</a></dd>
+                </dl>
+            </li>
+        </ul>
+        
+    </div>
+    <!-- 顶部结束 -->
+    <!-- 中部开始 -->
+     <!-- 左侧菜单开始 -->
+    <div class="left-nav">
+      <div id="side-nav">
+        <ul id="nav">
+            <th:block th:each="menu:${session.menuList}">
+                <li>
+                    <a href="#">
+                        <i class="iconfont">&#xe6b8;</i>
+                        <cite th:text="${menu.name}"></cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu" th:if="${#lists.size(menu.menuList)>0}">
+                        <th:block th:each="child:${menu.menuList}">
+                            <li>
+                                <a th:href="@{${child.url}}" th:target="main">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    <cite th:text="${child.name}"></cite>
+                                </a>
+                            </li>
+                        </th:block>
+                    </ul>
+                </li>
+            </th:block>
+            <!--<li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6b8;</i>
+                    <cite>用户管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a th:href="@{/userlist(page=1)}" th:target="main">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>用户列表</cite>
+
+                        </a>
+                    </li >
+                    <li>
+                        <a th:href="@{/adminlist(page=1)}" th:target="main">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>管理员列表</cite>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe723;</i>
+                    <cite>手机管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a th:href="@{/phone/list}" th:target="main">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>信息管理</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a th:href="@{/sales/list}" th:target="main">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>销售管理</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a th:href="@{/repertory/list}" th:target="main">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>库存管理</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a th:href="@{/brand/list}" th:target="main">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>品牌管理</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a th:href="@{/vendor/list}" th:target="main">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>供应商管理</cite>
+                        </a>
+                    </li >
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6ce;</i>
+                    <cite>数据管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a th:href="@{/operLog/list}" th:target="main">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>操作日志</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a th:href="@{/download}" th:target="main">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>下载管理</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a th:href="@{/up}" th:target="main">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>上传管理</cite>
+                        </a>
+                    </li >
+                </ul>
+            </li>-->
+        </ul>
+      </div>
+    </div>
+
+    <!--<div class="side-nav">
+        <ul id="1">
+            <c:forEach th:items="${menuList}" var="nav">
+                <li class="childUlLi">
+                    <a href="#"  target="menuFrame"><i class="glyph-icon icon-home"></i>${menu.name}</a>
+                    <ul>
+                        <c:if test="${fn:length(menu.menuList)>0}">
+                            <c:forEach items="${menu.menuList}" var="childmenu">
+                                <li><a th:href="${childmenu.url}" target="${childmenu.target}">
+                                    <i class="glyph-icon icon-chevron-right"></i>${childmenu.name}</a>
+                                </li>
+                            </c:forEach>
+                        </c:if>
+                    </ul>
+                </li>
+            </c:forEach>
+        </ul>
+    </div>-->
+
+    <!-- 左侧菜单结束 -->
+    <!-- 右侧主体开始 -->
+    <iframe name="main" th:src="@{/welcome}" style="background: white;width: 2000px;height:900px;" frameborder="0"></iframe>
+    <div class="footer">
+        <div class="copyright">Copyright ©2023 手机销售后台管理系统 @朱俊杰 20204071102</div>
+    </div> 
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>添加品牌</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<div class="container mt-3">
+    <form th:action="@{/brand/add}" method="post" style="width: 400px">
+        <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" id="bName" placeholder="品牌名称" name="bName">
+            <label for="bName">品牌名称</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">添加</button>
+        <button type="reset" class="btn btn-secondary">重置</button>
+    </form>
+</div>
+
+</body>
+</html>

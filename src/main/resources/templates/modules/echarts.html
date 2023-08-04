@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>手机价格</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/layui/2.5.7/css/layui.min.css">
+    <script src="https://cdn.staticfile.org/layui/2.5.7/layui.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<a th:href="@{/phone/list}" style="margin-left: 230px">
+    <button type="button" class="layui-btn layui-btn-sm layui-btn-normal">
+        <i class="layui-icon layui-icon-left"></i>
+    </button>
+</a>
+
+<div id="main" style="margin-left: 230px;margin-top: 30px;width: 1200px;height: 450px"></div>
+
+<script type="text/javascript">
+    $(function() {
+        var pageNum = 1; // 默认显示第一页
+        var pageSize = 10; // 每页显示5条记录
+
+        // 获取手机数据
+        $.ajax({
+            url: '/pms/getEcharts',  // 后端控制器的URL
+            type: 'GET',         // 请求方式
+            success: function(response) {
+                // 对手机数据进行分页
+                var phones = response;
+                var totalPage = Math.ceil(phones.length / pageSize);
+                renderChart(phones.slice((pageNum - 1) * pageSize, pageNum * pageSize));
+                renderPagination(pageNum, totalPage, phones);
+            },
+            error: function(xhr, status, error) {
+                console.log(error);  // 打印错误信息
+            }
+        });
+
+        // 渲染图表
+        function renderChart(data) {
+            var chartData = data.map(function(phone) {
+                return { name: phone.pname, value: phone.pprice };
+            });
+            var myChart= echarts.init(document.getElementById('main'));
+            var option = {
+                title: {
+                    text: '手机价格图表'
+                },
+                tooltip: {},
+                xAxis: {
+                    type: 'category',
+                    data: chartData.map(function(item) { return item.name; }), // x轴坐标为手机型号
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 30 // 旋转30度
+                    }
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    name: '价格',
+                    data: chartData.map(function(item) { return item.value; }), // y轴坐标为手机价格
+                    type: 'bar'
+                }]
+            };
+            myChart.setOption(option);
+        }
+
+        // 渲染分页组件
+        function renderPagination(pageNum, totalPage) {
+            $('#pagination').empty();
+            $('#prevLink').data('page', pageNum - 1);
+            $('#firstPage').data('page', 1);
+            $('#nextLink').data('page', pageNum + 1);
+            $('#lastPage').data('page', totalPage);
+            if (pageNum == 1) {
+                $('#prevItem').addClass('disabled');
+                $('#prevLink').removeAttr('href');
+            } else {
+                $('#prevItem').removeClass('disabled');
+                $('#prevLink').attr('href', '#').data('page', pageNum - 1);
+            }
+            if (pageNum == totalPage) {
+                $('#nextItem').addClass('disabled');
+                $('#nextLink').removeAttr('href');
+            } else {
+                $('#nextItem').removeClass('disabled');
+                $('#nextLink').attr('href', '#').data('page', pageNum + 1);
+            }
+            var html = '';
+            for (var i = 1; i <= totalPage; i++) {
+                if (i == pageNum) {
+                    html += '<li class="page-item active"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>';
+                } else {
+                    html += '<li class="page-item"><a class="page-link"href="#" data-page="' + i + '">' + i + '</a></li>';
+                }
+            }
+            $('#pagination').append(html);
+            $('#pagination a').click(function(event) {
+                event.preventDefault();
+                var page = $(this).data('page');
+                if (page == pageNum) {
+                    return false;
+                }
+                pageNum = page;
+                renderChart(phones.slice((pageNum - 1) * pageSize, pageNum * pageSize));
+                renderPagination(pageNum, totalPage);
+            });
+        }
+
+    });
+
+</script>
+</body>
+</html>

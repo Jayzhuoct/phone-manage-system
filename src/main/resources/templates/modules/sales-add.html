@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>添加手机销售</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<div class="container mt-3">
+  <form th:action="@{/sales/add}" method="post" style="width: 400px">
+    <div class="form-floating mt-3 mb-3">
+      <select class="form-select" id="pName" th:name="pId">
+        <option value=" ">请选择手机</option>
+      </select>
+      <label for="pName">手机名称</label>
+    </div>
+
+    <div class="form-floating mt-3 mb-3">
+      <input type="text" class="form-control" id="SDate" placeholder="销售日期" name="SDate">
+      <label for="SDate">销售日期</label>
+    </div>
+
+    <div class="form-floating mt-3 mb-3">
+      <input type="text" class="form-control" id="SQuantity" placeholder="销售数量" name="SQuantity">
+      <label for="SQuantity">销售数量</label>
+    </div>
+
+    <div class="form-floating mt-3 mb-3">
+      <input type="text" class="form-control" id="SPrice" placeholder="销售价格" name="SPrice">
+      <label for="SPrice">销售价格</label>
+    </div>
+
+    <div class="form-floating mt-3 mb-3">
+      <input type="text" class="form-control" id="customerName" placeholder="顾客姓名" name="customerName">
+      <label for="customerName">顾客姓名</label>
+    </div>
+
+    <div class="form-floating mt-3 mb-3">
+      <input type="text" class="form-control" id="customerTel" placeholder="顾客电话" name="customerTel">
+      <label for="customerTel">顾客电话</label>
+    </div>
+
+
+
+    <button type="submit" class="btn btn-primary">添加</button>
+    <button type="reset" class="btn btn-secondary">重置</button>
+  </form>
+</div>
+
+</body>
+</html>
+<script>
+  $(document).ready(function() {
+    var pNameSelect = $('#pName');
+    $.ajax({
+      url: '/pms/getPhoneList',
+      method: 'GET',
+      success: function(data) {
+        for (var i = 0; i < data.length; i++) {
+          var option = $('<option>').attr('value', data[i].pid).text(data[i].pname);
+          pNameSelect.append(option);
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log('Error: ' + textStatus);
+      }
+    });
+  });
+</script>

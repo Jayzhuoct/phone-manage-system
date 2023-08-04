@@ -1,0 +1,93 @@
+html, body, div, ul, dl, li, dd, ol, marquee, form, p, h1, h2, h3, h4, h5, h6, table {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: '\5fae\8f6f\96c5\9ed1', '\5b8b\4f53', Arial !important;
+    font-size: 12px;
+    
+}
+
+a {
+
+    text-decoration: none;
+    color: #666;
+    outline:none;
+}
+
+a:hover {
+    color: #f73;
+}
+
+ .LoopPage ul li, .LoopPage ul li a,.ClassCons p span, .ClassCons p span a, .SourcesListInfo dl dd span, .SourcesListInfo dl dd em, .Nav ul, .Nav ul li, .Nav ul li a, .Header p, .Header ul li {
+    float: left;
+}
+
+.TopBar ul, .Footer ul, .ConR, .ProCon ul li p, .LoopPage p, .ListArea h4 span, .StateInfo, .NeedName ul, .HaveNumber, .IntentionTit ul, .ClassCons p, .SourcesListInfo dl dd small, .SeeAllSources p a, .Nav p, .Header ul {
+    float: right;
+}
+
+.LoopPage ul li a, .IntentConListArea table.MyForm td em, .IntentConListArea table.MyForm td textarea, .Nav ul li a {
+    display: block;
+}
+
+.LoopPage {
+    border-top: solid 3px #69c;
+    padding: 1.3em 0;
+    margin: 1em auto;
+}
+
+.LoopPage p {
+}
+
+.LoopPage p strong {
+    padding: 0 .3em;
+}
+
+.LoopPage p input {
+    border: solid 1px #ddd;
+    text-align: center;
+    width: 29px;
+    margin: 0 .4em;
+}
+
+.LoopPage p input.Btn {
+    width: auto;
+    background: #aaa;
+    color: white;
+    border: none;
+    font: bold 13px/normal '\5fae\8f6f\96c5\9ed1', '\5b8b\4f53', Arial;
+    text-transform: uppercase;
+    border-radius: .3em;
+    cursor: pointer;
+}
+
+.LoopPage p input.Btn:hover {
+    background: #8aa9cb;
+    color: white;
+    cursor: pointer;
+}
+
+.LoopPage ul {
+}
+
+.LoopPage ul li {
+    padding: 0 .3em 0 0;
+}
+
+.LoopPage ul li a {
+    border: solid 1px #ddd;
+    padding: .2em .5em;
+    color: black;
+    border-radius: .3em;
+}
+
+.LoopPage ul li a:hover, .LoopPage ul li a.ExtLoopLink {
+    border: solid 1px #69C;
+    color: #47c;
+}
+
+
+
+

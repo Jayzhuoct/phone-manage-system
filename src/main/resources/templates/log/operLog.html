@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>操作日志</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function msg(){
+            alert("成功！");
+        }</script>
+    <style>
+        input:focus {
+            border: 1px solid #3b99fc;
+            outline: 0;
+            box-shadow: 0 0 3px 0px #3b99fc;
+            -webkit-box-shadow: 0 0 3px 0px #3b99fc;
+        }
+    </style>
+</head>
+
+<body>
+<div style="margin-left: 250px;width: 1300px">
+    <form th:action="@{/operLog/search}" method="post">
+        <input name="name" placeholder="操作查询">
+        <button type="submit" class="btn btn-primary">
+            <span style="color: white">查询</span>
+        </button>
+        <a th:href="@{/writeLog}">
+            <button type="button" class="btn btn-info" onclick="msg()">
+                <span style="color: white">导出</span>
+            </button>
+        </a>
+        <span style="color: gray">总计[[${pageInfo.total}]]条记录</span>
+    </form>
+<table class="table table-hover" style="width: 1500px">
+    <thead>
+    <tr>
+        <th>序   号</th>
+        <th>操作模块</th>
+        <th>操作方法</th>
+        <th>操作类型</th>
+        <th>操作描述</th>
+        <th>请求方法</th>
+        <th>请求参数</th>
+        <th>请求地址</th>
+        <th>操作人</th>
+        <th>操作时间</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="operLog,status:${operLogs}">
+        <td th:text="${status.count}"></td>
+        <td th:text="${operLog.operModule}"></td>
+        <td th:text="${operLog.operMethod}"></td>
+        <td th:text="${operLog.operType}"></td>
+        <td th:text="${operLog.operDesc}"></td>
+        <td th:text="${operLog.reqMethod}"></td>
+        <td th:text="${operLog.operParam}"></td>
+        <td th:text="${operLog.operUrl}"></td>
+        <td th:text="${operLog.operUser}"></td>
+        <td th:text="${operLog.createTime}"></td>
+    </tr>
+    </tbody>
+</table>
+    <ul class="pagination">
+        <!--首页-->
+        <li class="page-item">
+            <a class="page-link" th:href="@{/operLog/list(page=${pageInfo.navigateFirstPage})}">首页</a>
+        </li>
+        <!--上一页-->
+        <li class="page-item" th:if="${pageInfo.hasPreviousPage}">
+            <a class="page-link" th:href="@{/operLog/list(page=${pageInfo.prePage})}">上一页</a>
+        </li>
+        <!--循环遍历显示中间的页数-->
+        <li th:class="${num == pageInfo.pageNum?'page-item active':'page-item' }"
+            th:each="num:${#numbers.sequence(1,pageInfo.pages)}">
+            <a class="page-link" th:href="@{/operLog/list(page=${num})}" th:text="${num}"></a>
+        </li>
+        <!--下一页-->
+        <li class="page-item" th:if="${pageInfo.hasNextPage}">
+            <a class="page-link" th:href="@{/operLog/list(page=${pageInfo.nextPage})}">下一页</a>
+        </li>
+        <!--尾页-->
+        <li class="page-item"><a class="page-link" th:href="@{/operLog/list(page=${pageInfo.navigateLastPage})}">尾页</a></li>
+    </ul>
+</div>
+</body>
+</html>

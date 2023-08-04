@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>手机型号</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function del(){
+            var f = confirm("确定要删除吗？");
+            return f;
+        }
+        function msg(){
+            alert("成功！");
+        }
+    </script>
+    <style>
+        input:focus {
+            border: 1px solid #3b99fc;
+            outline: 0;
+            box-shadow: 0 0 3px 0px #3b99fc;
+            -webkit-box-shadow: 0 0 3px 0px #3b99fc;
+        }
+    </style>
+</head>
+<body>
+<div style="margin-left: 250px;width: 1200px">
+    <div style="float: left">
+    <form th:action="@{/phone/search}" method="post">
+        <label>
+            <input name="name" placeholder="模糊查询">
+        </label>
+        <button type="submit" class="btn btn-primary" onclick="msg()">
+            <span style="color: white">查询</span>
+        </button>
+        <a th:href="@{/phone/toAdd}" >
+            <button type="button" class="btn btn-success">
+                <span style="color: white">添加</span>
+            </button>
+        </a>
+    </form>
+    </div>
+    <div style="margin-left: 320px">
+    <form method="post" th:action="@{/readType}" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit" class="btn btn-warning" onclick="msg()">
+              <span style="color: white">导入</span>
+        </button>
+        <a th:href="@{/writeType}">
+            <button type="button" class="btn btn-info" onclick="msg()">
+                <span style="color: white">导出</span>
+            </button>
+        </a>
+        <a th:href="@{/phone/toEcharts}" >
+            <button type="button" class="btn btn-success">
+                <span style="color: white">统计</span>
+            </button>
+        </a>
+    </form>
+    </div>
+<table class="table table-hover" >
+    <thead>
+    <tr>
+        <th>序   号</th>
+        <th>手机名称</th>
+        <th>手机品牌</th>
+        <th>手机内存</th>
+        <th>手机颜色</th>
+        <th>手机价格</th>
+        <th>操    作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="phone:${phones}">
+        <td th:text="${phone.PId}"></td>
+        <td th:text="${phone.PName}"></td>
+        <td><span th:data-bid="${phone.BId}" class="brand-name">Loading...</span></td>
+        <td th:text="${phone.PMemory}"></td>
+        <td th:text="${phone.PColor}"></td>
+        <td th:text="${phone.PPrice}"></td>
+        <td>
+            <a th:href="@{/phone/toUpdate(id=${phone.PId})}" class="btn btn-primary" role="button">
+                <span style="color: white">修改</span>
+            </a>
+            <a th:href="@{/phone/delete(id=${phone.PId})}" class="btn btn-danger" role="button" onclick="del()">
+                <span style="color: white">删除</span>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+    <ul class="pagination">
+        <!--首页-->
+        <li class="page-item">
+            <a class="page-link" th:href="@{/phone/list(page=${pageInfo.navigateFirstPage})}">首页</a>
+        </li>
+        <!--上一页-->
+        <li class="page-item" th:if="${pageInfo.hasPreviousPage}">
+            <a class="page-link" th:href="@{/phone/list(page=${pageInfo.prePage})}">上一页</a>
+        </li>
+        <!--循环遍历显示中间的页数-->
+        <li th:class="${num == pageInfo.pageNum?'page-item active':'page-item' }"
+            th:each="num:${#numbers.sequence(1,pageInfo.pages)}">
+            <a class="page-link" th:href="@{/phone/list(page=${num})}" th:text="${num}"></a>
+        </li>
+        <!--下一页-->
+        <li class="page-item" th:if="${pageInfo.hasNextPage}">
+            <a class="page-link" th:href="@{/phone/list(page=${pageInfo.nextPage})}">下一页</a>
+        </li>
+        <!--尾页-->
+        <li class="page-item"><a class="page-link" th:href="@{/phone/list(page=${pageInfo.navigateLastPage})}">尾页</a></li>
+    </ul>
+    <div class="alert alert-light">
+        当前第[[${pageInfo.pageNum}]]页 共[[${pageInfo.pages}]]页 总计[[${pageInfo.total}]]条记录
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(document).ready(function() {
+        $('.brand-name').each(function() {
+            var bid = $(this).data('bid');
+            var brandName = $(this);
+            $.ajax({
+                url: '/pms/getBrandName?bid=' + bid,
+                method: 'GET',
+                success: function(data) {
+                    brandName.text(JSON.parse(JSON.stringify(data)).bname);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('Error: ' + textStatus);
+                }
+            });
+        });
+    });
+</script>
+
+

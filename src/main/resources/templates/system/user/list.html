@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>用户管理</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function del(){
+            var f = confirm("确定要删除吗？");
+            return f;
+        }
+
+        $(document).ready(function() {
+            $("span[data-module-id]").each(function() {
+                var moduleId = $(this).attr("data-module-id");
+                var url = "/pms/getModuleName?id=" + moduleId;
+                $.get(url, function(data) {
+                    $(this).text(data);
+                }.bind(this));
+            });
+
+            $("span[data-role-id]").each(function() {
+                var roleId = $(this).attr("data-role-id");
+                var url = "/pms/getRoleName?id=" + roleId;
+                $.get(url, function(data) {
+                    $(this).text(data);
+                }.bind(this));
+            });
+        });
+    </script>
+</head>
+
+<body>
+<div style="margin-left: 250px;width: 1300px">
+
+    <div style="float: left">
+        <form th:action="@{/user/search}" method="post">
+            <input name="name" placeholder="根据用户名模糊查询">
+            <button type="submit" class="btn btn-primary">
+                <span style="color: white">查询</span>
+            </button>
+        </form>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>序   号</th>
+            <th>用   户</th>
+            <th>角   色</th>
+            <th>权   限</th>
+            <th>操   作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="userDto ,status: ${userDtos}">
+            <td th:text="${status.count}"></td>
+            <td th:text="${userDto.username}"></td>
+            <td>
+                <ul>
+                    <li th:each="roleId : ${userDto.roles}">
+                        <span th:text="${roleId}" th:attr="data-role-id=${roleId}"></span>
+                    </li>
+                </ul>
+            <td>
+                <ul>
+                    <li th:each="moduleId : ${userDto.perms}">
+                        <span th:text="${moduleId}" th:attr="data-module-id=${moduleId}"></span>
+                    </li>
+                </ul>
+            </td>
+            <td>
+                <a th:href="@{/user/toUpdate(name=${userDto.username})}" class="btn btn-primary" role="button">
+                    <span style="color: white">修改</span>
+                </a>
+                <a th:href="@{/user/delete(name=${userDto.username})}" class="btn btn-danger" role="button" onclick="del()">
+                    <span style="color: white">删除</span>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <ul class="pagination">
+        <!--首页-->
+        <li class="page-item">
+            <a class="page-link" th:href="@{/user/list(page=${pageInfo.navigateFirstPage})}">首页</a>
+        </li>
+        <!--上一页-->
+        <li class="page-item" th:if="${pageInfo.hasPreviousPage}">
+            <a class="page-link" th:href="@{/user/list(page=${pageInfo.prePage})}">上一页</a>
+        </li>
+        <!--循环遍历显示中间的页数-->
+        <li th:class="${num == pageInfo.pageNum?'page-item active':'page-item' }"
+            th:each="num:${#numbers.sequence(1,pageInfo.pages)}">
+            <a class="page-link" th:href="@{/user/list(page=${num})}" th:text="${num}"></a>
+        </li>
+        <!--下一页-->
+        <li class="page-item" th:if="${pageInfo.hasNextPage}">
+            <a class="page-link" th:href="@{/user/list(page=${pageInfo.nextPage})}">下一页</a>
+        </li>
+        <!--尾页-->
+        <li class="page-item"><a class="page-link" th:href="@{/user/list(page=${pageInfo.navigateLastPage})}">尾页</a></li>
+    </ul>
+    <div class="alert alert-light">
+        当前第[[${pageInfo.pageNum}]]页 共[[${pageInfo.pages}]]页 总计[[${pageInfo.total}]]条记录
+    </div>
+</div>
+</body>
+</html>

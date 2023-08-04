@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>添加手机型号</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<div class="container mt-3">
+  <form th:action="@{/phone/add}" method="post" style="width: 400px">
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" id="p_name" placeholder="手机名称" name="pName">
+      <label for="p_name">手机名称</label>
+    </div>
+
+    <div class="form-floating mt-3 mb-3">
+      <select class="form-select" id="p_brand" name="bId">
+        <option value="">请选择品牌</option>
+      </select>
+      <label for="p_brand">手机品牌</label>
+    </div>
+
+    <div class="form-floating mt-3 mb-3">
+      <input type="text" class="form-control" id="p_colour" placeholder="手机颜色" name="pColour">
+      <label for="p_colour">手机颜色</label>
+    </div>
+
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" id="p_memory" placeholder="手机内存" name="pMemory">
+      <label for="p_memory">手机内存</label>
+    </div>
+
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" id="p_price" placeholder="手机价格" name="pPrice">
+      <label for="p_price">手机价格</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">添加</button>
+    <button type="reset" class="btn btn-secondary">重置</button>
+  </form>
+</div>
+
+</body>
+</html>
+<script>
+  $(document).ready(function() {
+    var brandSelect = $('#p_brand');
+    $.ajax({
+      url: '/pms/getBrandList',
+      method: 'GET',
+      success: function(data) {
+        for (var i = 0; i < data.length; i++) {
+          var option = $('<option>').attr('value', data[i].bid).text(data[i].bname);
+          brandSelect.append(option);
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log('Error: ' + textStatus);
+      }
+    });
+  });
+</script>

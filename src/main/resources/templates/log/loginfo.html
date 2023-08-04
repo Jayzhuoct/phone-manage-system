@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>登陆日志</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+  function del(){
+    var f = confirm("确定要删除吗？");
+    return f;
+  }
+
+  $(document).ready(function() {
+    $("td.userid").each(function() {
+      var userid = $(this).attr("data-userid");
+      var url = "/pms/getUserName?id=" + userid;
+      $.get(url, function(data) {
+        $(this).text(data);
+      }.bind(this));
+    });
+  });
+</script>
+
+<div style="margin-left: 250px;width: 1200px">
+  <div style="float: left">
+    <form th:action="@{/loginfo/search}" method="post">
+      <input name="id" placeholder="用户名称模糊查询">
+      <button type="submit" class="btn btn-primary">
+        <span style="color: white">查询</span>
+      </button>
+    </form>
+  </div>
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th>id</th>
+      <th>登陆名</th>
+      <th>登陆时间</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="loginfo:${loginfos}">
+      <td th:text="${loginfo.logid}"></td>
+      <td class="userid" th:text="${loginfo.userid}" th:attr="data-userid=${loginfo.userid}"></td>
+      <td th:text="${loginfo.logintime}"></td>
+    </tr>
+    </tbody>
+  </table>
+  <ul class="pagination">
+    <!--首页-->
+    <li class="page-item">
+      <a class="page-link" th:href="@{/loginfo/list(page=${pageInfo.navigateFirstPage})}">首页</a>
+    </li>
+    <!--上一页-->
+    <li class="page-item" th:if="${pageInfo.hasPreviousPage}">
+      <a class="page-link" th:href="@{/loginfo/list(page=${pageInfo.prePage})}">上一页</a>
+    </li>
+    <!--循环遍历显示中间的页数-->
+    <li th:class="${num == pageInfo.pageNum?'page-item active':'page-item' }"
+        th:each="num:${#numbers.sequence(1,pageInfo.pages)}">
+      <a class="page-link" th:href="@{/loginfo/list(page=${num})}" th:text="${num}"></a>
+    </li>
+    <!--下一页-->
+    <li class="page-item" th:if="${pageInfo.hasNextPage}">
+      <a class="page-link" th:href="@{/loginfo/list(page=${pageInfo.nextPage})}">下一页</a>
+    </li>
+    <!--尾页-->
+    <li class="page-item"><a class="page-link" th:href="@{/loginfo/list(page=${pageInfo.navigateLastPage})}">尾页</a></li>
+  </ul>
+  <div class="alert alert-light">
+    当前第[[${pageInfo.pageNum}]]页 共[[${pageInfo.pages}]]页 总计[[${pageInfo.total}]]条记录
+  </div>
+</div>
+</body>
+</html>
